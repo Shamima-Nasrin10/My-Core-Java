@@ -32,6 +32,7 @@ public class ProductView extends javax.swing.JFrame {
             db.getCon().close();
 
             JOptionPane.showMessageDialog(this, "Product added successfully");
+            clear();
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Product add unsuccessful");
@@ -43,6 +44,23 @@ public class ProductView extends javax.swing.JFrame {
             Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+    
+    public void getTotalPrice(){
+        float unitPrice= Float.parseFloat(txtUnitPrice.getText().trim());
+        float quantity= Float.parseFloat(txtQuantity.getText().trim());
+        float totalPrice= unitPrice*quantity;
+        txtTotalPrice.setText(totalPrice+"");
+        
+    }
+    
+    public void clear(){
+        txtId.setText("");
+        txtName.setText("");
+        txtUnitPrice.setText("");
+        txtQuantity.setText("");
+        txtTotalPrice.setText("");
+        txtSalesPrice.setText("");
     }
 
     /**
@@ -82,6 +100,8 @@ public class ProductView extends javax.swing.JFrame {
         btnProductReset = new javax.swing.JButton();
         jLabel11 = new javax.swing.JLabel();
         txtUnitPrice = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblProductView = new javax.swing.JTable();
         sales = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         stock = new javax.swing.JPanel();
@@ -217,6 +237,12 @@ public class ProductView extends javax.swing.JFrame {
 
         jLabel8.setText("Quantity");
         add.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, -1, -1));
+
+        txtQuantity.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txtQuantityFocusLost(evt);
+            }
+        });
         add.add(txtQuantity, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 180, 150, -1));
 
         jLabel9.setText("Total Price");
@@ -242,11 +268,31 @@ public class ProductView extends javax.swing.JFrame {
         add.add(btnProductEdit, new org.netbeans.lib.awtextra.AbsoluteConstraints(320, 120, -1, -1));
 
         btnProductReset.setText("Reset");
+        btnProductReset.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnProductResetMouseClicked(evt);
+            }
+        });
         add.add(btnProductReset, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 120, -1, -1));
 
         jLabel11.setText("Unit Price");
         add.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, -1, -1));
         add.add(txtUnitPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 140, 150, -1));
+
+        tblProductView.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblProductView);
+
+        add.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 290, 640, 130));
 
         mainView.addTab("Add", add);
 
@@ -344,6 +390,16 @@ public class ProductView extends javax.swing.JFrame {
         addProduct();
     }//GEN-LAST:event_btnProductAddMouseClicked
 
+    private void txtQuantityFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtQuantityFocusLost
+        // TODO add your handling code here:
+        getTotalPrice();
+    }//GEN-LAST:event_txtQuantityFocusLost
+
+    private void btnProductResetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnProductResetMouseClicked
+        // TODO add your handling code here:
+        clear();
+    }//GEN-LAST:event_btnProductResetMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -404,10 +460,12 @@ public class ProductView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane mainView;
     private javax.swing.JPanel report;
     private javax.swing.JPanel sales;
     private javax.swing.JPanel stock;
+    private javax.swing.JTable tblProductView;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtQuantity;
