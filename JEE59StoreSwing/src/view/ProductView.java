@@ -1,10 +1,12 @@
 package view;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import util.Dbutil;
 
 public class ProductView extends javax.swing.JFrame {
@@ -13,6 +15,7 @@ public class ProductView extends javax.swing.JFrame {
 
     public ProductView() {
         initComponents();
+        showProductOnTable();
     }
 
     public void addProduct() {
@@ -33,6 +36,7 @@ public class ProductView extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, "Product added successfully");
             clear();
+            showProductOnTable();
 
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Product add unsuccessful");
@@ -61,6 +65,41 @@ public class ProductView extends javax.swing.JFrame {
         txtQuantity.setText("");
         txtTotalPrice.setText("");
         txtSalesPrice.setText("");
+    }
+    
+    String[] productViewTableColum={"ID","Name","Unit Price","Quantity","Total Price","Sales Price"};
+    
+    public void showProductOnTable(){
+        String sql="select * from product";
+        PreparedStatement ps;
+        ResultSet rs;
+        
+        DefaultTableModel model=new DefaultTableModel();
+        model.setColumnIdentifiers(productViewTableColum);
+        tblProductView.setModel(model);
+        try {
+            ps=db.getCon().prepareStatement(sql);
+            rs=ps.executeQuery();
+            
+            while(rs.next()){
+               int id=rs.getInt("id");
+               String name=rs.getString("name");
+               float unitPrice=rs.getFloat("unitPrice");
+               float quantity=rs.getFloat("quantity");
+               float totalPrice=rs.getFloat("totalPrice");
+               float salesPrice=rs.getFloat("salesPrice");
+               
+               model.addRow(new Object[]{id,name,unitPrice,quantity,totalPrice,salesPrice});
+               
+            }
+            rs.close();
+            ps.close();
+            db.getCon();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -229,6 +268,8 @@ public class ProductView extends javax.swing.JFrame {
 
         jLabel6.setText("ID");
         add.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 40, -1));
+
+        txtId.setEditable(false);
         add.add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 80, 150, -1));
 
         jLabel7.setText("Name");
@@ -236,22 +277,24 @@ public class ProductView extends javax.swing.JFrame {
         add.add(txtName, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 110, 150, -1));
 
         jLabel8.setText("Quantity");
-        add.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 180, -1, -1));
+        add.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, -1, -1));
 
         txtQuantity.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txtQuantityFocusLost(evt);
             }
         });
-        add.add(txtQuantity, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 180, 150, -1));
+        add.add(txtQuantity, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 170, 150, -1));
 
         jLabel9.setText("Total Price");
-        add.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, -1, -1));
-        add.add(txtTotalPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 220, 150, -1));
+        add.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, -1, -1));
+
+        txtTotalPrice.setEditable(false);
+        add.add(txtTotalPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 200, 150, -1));
 
         jLabel10.setText("Sales Price");
-        add.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 260, -1, -1));
-        add.add(txtSalesPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 260, 150, -1));
+        add.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 230, -1, -1));
+        add.add(txtSalesPrice, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 230, 150, -1));
 
         btnProductAdd.setText("Add");
         btnProductAdd.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -292,7 +335,7 @@ public class ProductView extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(tblProductView);
 
-        add.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 290, 640, 130));
+        add.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 270, 640, 150));
 
         mainView.addTab("Add", add);
 
