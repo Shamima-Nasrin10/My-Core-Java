@@ -39,8 +39,36 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'Apple',100.00,10.00,1000.00,120.00),(2,'Cupcake',15.00,20.00,300.00,20.00),(3,'Potato',50.00,20.00,1000.00,60.00),(4,'Egg',10.00,150.00,1500.00,12.00),(5,'Milk',80.00,20.00,1600.00,100.00);
+INSERT INTO `product` VALUES (1,'Apple',100.00,10.00,1000.00,120.00),(2,'Cupcake',15.00,20.00,300.00,20.00),(4,'Egg',15.00,150.00,2250.00,20.00),(5,'Milk',80.00,20.00,1600.00,100.00);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sales`
+--
+
+DROP TABLE IF EXISTS `sales`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sales` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `salesUnitPrice` float(8,2) NOT NULL,
+  `salesQuantity` float(8,2) NOT NULL,
+  `salesTotalPrice` float(8,2) NOT NULL,
+  `salesDate` date NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sales`
+--
+
+LOCK TABLES `sales` WRITE;
+/*!40000 ALTER TABLE `sales` DISABLE KEYS */;
+INSERT INTO `sales` VALUES (1,'Apple',120.00,3.00,360.00,'2024-05-29');
+/*!40000 ALTER TABLE `sales` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -52,4 +80,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-29 18:54:36
+-- Dump completed on 2024-05-30 12:44:20
