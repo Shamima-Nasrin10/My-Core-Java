@@ -30,7 +30,7 @@ CREATE TABLE `product` (
   `totalPrice` float(8,2) NOT NULL,
   `salesPrice` float(8,2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,7 +39,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'Apple',100.00,10.00,1000.00,120.00),(2,'Cupcake',15.00,20.00,300.00,20.00),(4,'Egg',15.00,150.00,2250.00,20.00),(5,'Milk',80.00,20.00,1600.00,100.00);
+INSERT INTO `product` VALUES (1,'Apple',100.00,10.00,1000.00,120.00),(4,'Egg',15.00,150.00,2250.00,20.00),(6,'Mobile',12000.00,2.00,24000.00,13000.00),(9,'habijabi',50.00,50.00,2500.00,60.00),(14,'Bat',120.00,5.00,600.00,130.00),(15,'Ball',50.00,5.00,250.00,60.00),(16,'Apple',100.00,10.00,1000.00,120.00);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -70,6 +70,32 @@ LOCK TABLES `sales` WRITE;
 INSERT INTO `sales` VALUES (1,'Apple',120.00,3.00,360.00,'2024-05-29');
 /*!40000 ALTER TABLE `sales` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `stock`
+--
+
+DROP TABLE IF EXISTS `stock`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `stock` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `quantity` float(8,2) NOT NULL,
+  `purchasePrice` float(8,2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `stock`
+--
+
+LOCK TABLES `stock` WRITE;
+/*!40000 ALTER TABLE `stock` DISABLE KEYS */;
+INSERT INTO `stock` VALUES (1,'Mobile',12000.00,2.00),(2,'RAM',2000.00,5.00),(3,'hhh',33.00,10.00),(4,'habijabi',50.00,50.00),(5,'Cake',100.00,10.00),(6,'bbbb',45.00,5.00),(7,'hhhnb',50.00,5.00),(8,'Bat',120.00,5.00),(9,'Ball',50.00,5.00),(10,'Apple',100.00,10.00);
+/*!40000 ALTER TABLE `stock` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -80,4 +106,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-05-30 12:44:20
+-- Dump completed on 2024-06-01 19:05:20
