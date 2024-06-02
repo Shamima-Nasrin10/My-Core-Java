@@ -39,6 +39,7 @@ public class ProductView extends javax.swing.JFrame {
     public boolean getStockProductList() {
         String sql = "select name from stock";
         boolean status = false;
+
         String purchaseProductName = txtName.getText().trim();
         try {
             ps = db.getCon().prepareStatement(sql);
@@ -49,7 +50,7 @@ public class ProductView extends javax.swing.JFrame {
                 if (productName.equalsIgnoreCase(purchaseProductName)) {
                     status = true;
                     break;
-                } 
+                }
             }
 
         } catch (ClassNotFoundException | SQLException ex) {
@@ -68,7 +69,7 @@ public class ProductView extends javax.swing.JFrame {
                 ps = db.getCon().prepareStatement(sql);
 
                 ps.setFloat(1, Float.parseFloat(txtQuantity.getText().trim()));
-                ps.setString(2, txtName.getName());
+                ps.setString(2, txtName.getText());
 
                 ps.executeUpdate();
                 ps.close();
@@ -85,8 +86,8 @@ public class ProductView extends javax.swing.JFrame {
                 ps = db.getCon().prepareStatement(sql);
 
                 ps.setString(1, txtName.getText().trim());
-                ps.setFloat(3, Float.parseFloat(txtQuantity.getText().trim()));
-                ps.setFloat(2, Float.parseFloat(txtUnitPrice.getText().trim()));
+                ps.setFloat(2, Float.parseFloat(txtQuantity.getText().trim()));
+                ps.setFloat(3, Float.parseFloat(txtUnitPrice.getText().trim()));
                 ps.executeUpdate();
                 ps.close();
                 db.getCon().close();
@@ -100,7 +101,7 @@ public class ProductView extends javax.swing.JFrame {
 
     public void addProduct() {
         String sql = "insert into product(name,unitPrice,quantity,totalPrice,salesPrice) values(?,?,?,?,?)";
-        PreparedStatement ps;
+        
         try {
             ps = db.getCon().prepareStatement(sql);
 
@@ -153,8 +154,6 @@ public class ProductView extends javax.swing.JFrame {
 
     public void showProductOnTable() {
         String sql = "select * from product";
-        PreparedStatement ps;
-        ResultSet rs;
 
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(productViewTableColum);
@@ -187,8 +186,6 @@ public class ProductView extends javax.swing.JFrame {
 
     public void showStockOnTable() {
         String sql = "select * from stock";
-        PreparedStatement ps;
-        ResultSet rs;
 
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(stockViewTableColum);
@@ -218,7 +215,6 @@ public class ProductView extends javax.swing.JFrame {
 
     public void deleteProduct() {
         String sql = "delete from product where id=?";
-        PreparedStatement ps;
 
         try {
             ps = db.getCon().prepareStatement(sql);
@@ -245,7 +241,7 @@ public class ProductView extends javax.swing.JFrame {
     public void editProduct() {
 
         String sql = "update product set name=?, unitPrice=?, quantity=?, totalPrice=?, salesPrice=? where id=?";
-        PreparedStatement ps;
+        
 
         try {
             ps = db.getCon().prepareStatement(sql);
@@ -277,8 +273,6 @@ public class ProductView extends javax.swing.JFrame {
 
     public void showproductToCombo() {
         String sql = "select name from product";
-        PreparedStatement ps;
-        ResultSet rs;
         comProductName.removeAllItems();
 
         try {
@@ -305,25 +299,25 @@ public class ProductView extends javax.swing.JFrame {
             selectedProductName = (String) e.getItem();
             extractSalesPrice(selectedProductName);
         }
-        
-        String sql="select quantity from stock where name=?";
-        
+
+        String sql = "select quantity from stock where name=?";
+
         try {
-            ps=db.getCon().prepareStatement(sql);
+            ps = db.getCon().prepareStatement(sql);
             ps.setString(1, selectedProductName);
-            
-            rs=ps.executeQuery();
-            while(rs.next()){
-                float quantity=rs.getFloat("quantity");
-                lblStock.setText(quantity+"");
-                
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                float quantity = rs.getFloat("quantity");
+                lblStock.setText(quantity + "");
+
             }
-            
+
             ps.close();
             db.getCon().close();
             rs.close();
-            
-        } catch (ClassNotFoundException|SQLException ex) {
+
+        } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println(selectedProductName);
@@ -333,8 +327,7 @@ public class ProductView extends javax.swing.JFrame {
     public void extractSalesPrice(String productName) {
 
         String sql = "select salesPrice from product where name=?";
-        PreparedStatement ps;
-        ResultSet rs;
+
         try {
             ps = db.getCon().prepareStatement(sql);
             ps.setString(1, productName);
@@ -400,7 +393,7 @@ public class ProductView extends javax.swing.JFrame {
             ps.executeUpdate();
             ps.close();
             db.getCon().close();
-            
+
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -409,7 +402,6 @@ public class ProductView extends javax.swing.JFrame {
     public void addSales() {
 
         Date date = convertUtilDateToSqlDate(salesDate.getDate());
-        PreparedStatement ps;
         String sql = "insert into sales(name, salesUnitPrice, salesQuantity, salesTotalPrice, salesDate)" + "values(?,?,?,?,?)";
 
         try {
