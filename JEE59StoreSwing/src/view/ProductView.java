@@ -121,6 +121,7 @@ public class ProductView extends javax.swing.JFrame {
 
             JOptionPane.showMessageDialog(this, "Product added successfully");
             addProductToStock();
+            showStockOnTable();
             clear();
             showProductOnTable();
 
@@ -228,7 +229,7 @@ public class ProductView extends javax.swing.JFrame {
 
         try {
             ps = db.getCon().prepareStatement(sql);
-            ps.setInt(1, Integer.parseInt(txtId.getText()));
+            ps.setInt(1, Integer.parseInt(txtId.getText().trim()));
             ps.executeUpdate();
 
             ps.close();
@@ -668,7 +669,7 @@ public class ProductView extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tblProductView);
 
-        add.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 270, 640, 150));
+        add.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 270, 640, 130));
 
         mainView.addTab("Add", add);
 
@@ -843,7 +844,7 @@ public class ProductView extends javax.swing.JFrame {
             stockLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(stockLayout.createSequentialGroup()
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 162, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
