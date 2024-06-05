@@ -18,7 +18,6 @@ public class ProductView extends javax.swing.JFrame {
 
     Dbutil db = new Dbutil();
     PreparedStatement ps;
-    ResultSet rs;
 
     public ProductView() {
 
@@ -35,10 +34,48 @@ public class ProductView extends javax.swing.JFrame {
 
         });
     }
+//    Date fromDateUtil=
 
+    
+    public void getPurchaseReport(){
+        
+        Date fromDate=dateFromReport.getDate();
+        Date toDate=dateToReport.getDate();
+        
+        String sql="select * from product where puchaseDate between ? and ?";
+        ResultSet rs;
+        try {
+            ps=db.getCon().prepareStatement(sql);
+            ps.setDate(1, convertUtilDateToSqlDate(fromDate));
+            ps.setDate(2, convertUtilDateToSqlDate(toDate));
+            
+            rs=ps.executeQuery();
+            
+            while(rs.next()){
+                int id=rs.getInt("id");
+                String name=rs.getString("name");
+                
+                float unitPrice = rs.getFloat("unitPrice");
+                float quantity = rs.getFloat("quantity");
+                float totalPrice = rs.getFloat("totalPrice");
+                float salesPrice = rs.getFloat("salesPrice");
+                
+            }
+            
+            db.getCon().close();
+            ps.close();
+            rs.close();
+            
+        } catch (ClassNotFoundException|SQLException ex) {
+            Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
     public boolean getStockProductList() {
         String sql = "select name from stock";
         boolean status = false;
+        ResultSet rs;
 
         String purchaseProductName = txtName.getText().trim();
         try {
@@ -69,7 +106,7 @@ public class ProductView extends javax.swing.JFrame {
                 ps = db.getCon().prepareStatement(sql);
 
                 ps.setFloat(1, Float.parseFloat(txtQuantity.getText().trim()));
-                ps.setString(2, txtName.getText());
+                ps.setString(2, txtName.getText().trim());
 
                 ps.executeUpdate();
                 ps.close();
@@ -96,12 +133,12 @@ public class ProductView extends javax.swing.JFrame {
                 Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        showStockOnTable();
+//        showStockOnTable();
     }
 
     public void addProduct() {
         String sql = "insert into product(name,unitPrice,quantity,totalPrice,salesPrice) values(?,?,?,?,?)";
-        
+
         try {
             ps = db.getCon().prepareStatement(sql);
 
@@ -112,8 +149,8 @@ public class ProductView extends javax.swing.JFrame {
             ps.setFloat(5, Float.parseFloat(txtSalesPrice.getText().trim()));
 
             ps.executeUpdate();
-            ps.close();
             db.getCon().close();
+            ps.close();
 
             JOptionPane.showMessageDialog(this, "Product added successfully");
             addProductToStock();
@@ -154,6 +191,7 @@ public class ProductView extends javax.swing.JFrame {
 
     public void showProductOnTable() {
         String sql = "select * from product";
+        ResultSet rs;
 
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(productViewTableColum);
@@ -173,9 +211,9 @@ public class ProductView extends javax.swing.JFrame {
                 model.addRow(new Object[]{id, name, unitPrice, quantity, totalPrice, salesPrice});
 
             }
-            rs.close();
-            ps.close();
             db.getCon();
+            ps.close();
+//            rs.close();
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -186,6 +224,7 @@ public class ProductView extends javax.swing.JFrame {
 
     public void showStockOnTable() {
         String sql = "select * from stock";
+        ResultSet rs;
 
         DefaultTableModel model = new DefaultTableModel();
         model.setColumnIdentifiers(stockViewTableColum);
@@ -203,9 +242,10 @@ public class ProductView extends javax.swing.JFrame {
                 model.addRow(new Object[]{id, name, quantity, unitPrice});
 
             }
-            rs.close();
-            ps.close();
             db.getCon();
+            ps.close();
+//            rs.close();
+
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -220,9 +260,8 @@ public class ProductView extends javax.swing.JFrame {
             ps = db.getCon().prepareStatement(sql);
             ps.setInt(1, Integer.parseInt(txtId.getText().trim()));
             ps.executeUpdate();
-
-            ps.close();
             db.getCon();
+            ps.close();
 
             JOptionPane.showMessageDialog(this, "Delete product successful");
             clear();
@@ -241,7 +280,6 @@ public class ProductView extends javax.swing.JFrame {
     public void editProduct() {
 
         String sql = "update product set name=?, unitPrice=?, quantity=?, totalPrice=?, salesPrice=? where id=?";
-        
 
         try {
             ps = db.getCon().prepareStatement(sql);
@@ -254,8 +292,9 @@ public class ProductView extends javax.swing.JFrame {
             ps.setInt(6, Integer.parseInt(txtId.getText()));
 
             ps.executeUpdate();
-            ps.close();
             db.getCon();
+            ps.close();
+
             JOptionPane.showMessageDialog(this, "Update product successful.");
             clear();
             showProductOnTable();
@@ -277,14 +316,14 @@ public class ProductView extends javax.swing.JFrame {
 
         try {
             ps = db.getCon().prepareStatement(sql);
-            rs = ps.executeQuery();
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String productName = rs.getString("name");
                 comProductName.addItem(productName);
             }
-            ps.close();
             db.getCon();
-            rs.close();
+            ps.close();
+
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -293,7 +332,7 @@ public class ProductView extends javax.swing.JFrame {
     }
 
     public void getProductSalesPrice(ItemEvent e) {
-
+        ResultSet rs;
         String selectedProductName = "";
         if (e.getStateChange() == ItemEvent.SELECTED) {
             selectedProductName = (String) e.getItem();
@@ -312,10 +351,8 @@ public class ProductView extends javax.swing.JFrame {
                 lblStock.setText(quantity + "");
 
             }
-
-            ps.close();
             db.getCon().close();
-            rs.close();
+            ps.close();
 
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
@@ -327,6 +364,7 @@ public class ProductView extends javax.swing.JFrame {
     public void extractSalesPrice(String productName) {
 
         String sql = "select salesPrice from product where name=?";
+        ResultSet rs;
 
         try {
             ps = db.getCon().prepareStatement(sql);
@@ -391,8 +429,8 @@ public class ProductView extends javax.swing.JFrame {
             ps.setString(2, comProductName.getSelectedItem().toString());
 
             ps.executeUpdate();
-            ps.close();
             db.getCon().close();
+            ps.close();
 
         } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
@@ -414,9 +452,8 @@ public class ProductView extends javax.swing.JFrame {
             ps.setDate(5, convertUtilDateToSqlDate(date));
 
             ps.executeUpdate();
-            ps.close();
-
             db.getCon().close();
+            ps.close();
 
             JOptionPane.showMessageDialog(this, "Add sales successful.");
             stockUpdateOnSales();
@@ -493,7 +530,18 @@ public class ProductView extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblStock = new javax.swing.JTable();
         report = new javax.swing.JPanel();
+        jPanel7 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        dateFromReport = new com.toedter.calendar.JDateChooser();
+        jLabel19 = new javax.swing.JLabel();
+        dateToReport = new com.toedter.calendar.JDateChooser();
+        btnReportPurchase = new javax.swing.JButton();
+        btnReportSales = new javax.swing.JButton();
+        btnReportStock = new javax.swing.JButton();
+        btnReportReset = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblReports = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(800, 500));
@@ -697,7 +745,7 @@ public class ProductView extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tblProductView);
 
-        add.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 270, 640, 110));
+        add.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 270, 610, 110));
 
         mainView.addTab("Add", add);
 
@@ -848,7 +896,7 @@ public class ProductView extends javax.swing.JFrame {
 
         mainView.addTab("Sales", sales);
 
-        jPanel6.setBackground(new java.awt.Color(153, 153, 153));
+        jPanel6.setBackground(new java.awt.Color(204, 246, 231));
         jPanel6.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel17.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -891,24 +939,65 @@ public class ProductView extends javax.swing.JFrame {
 
         mainView.addTab("Stock", stock);
 
-        jLabel4.setText("Report");
+        report.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        javax.swing.GroupLayout reportLayout = new javax.swing.GroupLayout(report);
-        report.setLayout(reportLayout);
-        reportLayout.setHorizontalGroup(
-            reportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(reportLayout.createSequentialGroup()
-                .addGap(139, 139, 139)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(217, Short.MAX_VALUE))
+        jPanel7.setBackground(new java.awt.Color(204, 236, 225));
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 102, 0));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Report");
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 638, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
-        reportLayout.setVerticalGroup(
-            reportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(reportLayout.createSequentialGroup()
-                .addGap(139, 139, 139)
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(161, Short.MAX_VALUE))
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 60, Short.MAX_VALUE)
         );
+
+        report.add(jPanel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 1, -1, 60));
+
+        jLabel4.setText("From");
+        report.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 50, 20));
+        report.add(dateFromReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 80, 150, -1));
+
+        jLabel19.setText("To");
+        report.add(jLabel19, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 80, 50, 20));
+        report.add(dateToReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 80, 140, -1));
+
+        btnReportPurchase.setText("Purchase");
+        btnReportPurchase.setActionCommand("Purchase");
+        report.add(btnReportPurchase, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, -1, -1));
+
+        btnReportSales.setText("Sales");
+        report.add(btnReportSales, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 140, -1, -1));
+
+        btnReportStock.setText("Stock");
+        report.add(btnReportStock, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 140, -1, -1));
+
+        btnReportReset.setText("Reset");
+        report.add(btnReportReset, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 140, -1, -1));
+
+        tblReports.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(tblReports);
+
+        report.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 197, 610, 210));
 
         mainView.addTab("Report", report);
 
@@ -1035,10 +1124,16 @@ public class ProductView extends javax.swing.JFrame {
     private javax.swing.JButton btnProductEdit;
     private javax.swing.JButton btnProductReset;
     private javax.swing.JButton btnReport;
+    private javax.swing.JButton btnReportPurchase;
+    private javax.swing.JButton btnReportReset;
+    private javax.swing.JButton btnReportSales;
+    private javax.swing.JButton btnReportStock;
     private javax.swing.JButton btnSalesProduct;
     private javax.swing.JButton btnSalesSave;
     private javax.swing.JButton btnStock;
     private javax.swing.JComboBox<String> comProductName;
+    private com.toedter.calendar.JDateChooser dateFromReport;
+    private com.toedter.calendar.JDateChooser dateToReport;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -1052,6 +1147,8 @@ public class ProductView extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -1065,8 +1162,10 @@ public class ProductView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JLabel lblStock;
     private javax.swing.JTabbedPane mainView;
     private javax.swing.JPanel report;
@@ -1074,6 +1173,7 @@ public class ProductView extends javax.swing.JFrame {
     private com.toedter.calendar.JDateChooser salesDate;
     private javax.swing.JPanel stock;
     private javax.swing.JTable tblProductView;
+    private javax.swing.JTable tblReports;
     private javax.swing.JTable tblStock;
     private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtName;
