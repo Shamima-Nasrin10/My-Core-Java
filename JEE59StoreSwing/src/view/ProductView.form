@@ -930,8 +930,10 @@
             <Component class="javax.swing.JButton" name="btnReportPurchase">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Purchase"/>
-                <Property name="actionCommand" type="java.lang.String" value="Purchase"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnReportPurchaseMouseClicked"/>
+              </Events>
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
                   <AbsoluteConstraints x="120" y="140" width="-1" height="-1"/>

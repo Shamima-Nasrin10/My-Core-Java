@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +19,9 @@ public class ProductView extends javax.swing.JFrame {
 
     Dbutil db = new Dbutil();
     PreparedStatement ps;
+
+    LocalDate currentDate = LocalDate.now();
+    java.sql.Date sqlCurrentDate = java.sql.Date.valueOf(currentDate);
 
     public ProductView() {
 
@@ -34,44 +38,58 @@ public class ProductView extends javax.swing.JFrame {
 
         });
     }
-//    Date fromDateUtil=
+   
 
-    
-    public void getPurchaseReport(){
-        
-        Date fromDate=dateFromReport.getDate();
-        Date toDate=dateToReport.getDate();
-        
-        String sql="select * from product where puchaseDate between ? and ?";
+    public void getSalesReport() {
+
+    }
+
+    public void getPurchaseReport() {
+        String[] reportViewTableColumn = {"SL", "Name", "Unit Price", "Quantity", "Total Price",
+            "Sales Price", "Date"};
+
+        DefaultTableModel model = new DefaultTableModel();
+        model.setColumnIdentifiers(reportViewTableColumn);
+        tblReports.setModel(model);
+
+        Date fromDate = dateFromReport.getDate();
+        Date toDate = dateToReport.getDate();
+
+        String sql = "select * from product where purchaseDate between ? and ?";
         ResultSet rs;
         try {
-            ps=db.getCon().prepareStatement(sql);
+            ps = db.getCon().prepareStatement(sql);
             ps.setDate(1, convertUtilDateToSqlDate(fromDate));
             ps.setDate(2, convertUtilDateToSqlDate(toDate));
-            
-            rs=ps.executeQuery();
-            
-            while(rs.next()){
-                int id=rs.getInt("id");
-                String name=rs.getString("name");
-                
+
+            rs = ps.executeQuery();
+            int sl = 1;
+            while (rs.next()) {
+
+//                int id = rs.getInt("id");
+                String name = rs.getString("name");
+
                 float unitPrice = rs.getFloat("unitPrice");
                 float quantity = rs.getFloat("quantity");
                 float totalPrice = rs.getFloat("totalPrice");
                 float salesPrice = rs.getFloat("salesPrice");
-                
+                Date purchaseDate = rs.getDate("purchaseDate");
+
+                model.addRow(new Object[]{sl, name, unitPrice, quantity, totalPrice, salesPrice, purchaseDate});
+
+                sl += 1;
+
             }
-            
+
             db.getCon().close();
             ps.close();
             rs.close();
-            
-        } catch (ClassNotFoundException|SQLException ex) {
+
+        } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(ProductView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
+
     public boolean getStockProductList() {
         String sql = "select name from stock";
         boolean status = false;
@@ -137,7 +155,7 @@ public class ProductView extends javax.swing.JFrame {
     }
 
     public void addProduct() {
-        String sql = "insert into product(name,unitPrice,quantity,totalPrice,salesPrice) values(?,?,?,?,?)";
+        String sql = "insert into product(name,unitPrice,quantity,totalPrice,salesPrice,purchaseDate) values(?,?,?,?,?,?)";
 
         try {
             ps = db.getCon().prepareStatement(sql);
@@ -147,6 +165,7 @@ public class ProductView extends javax.swing.JFrame {
             ps.setFloat(3, Float.parseFloat(txtQuantity.getText().trim()));
             ps.setFloat(4, Float.parseFloat(txtTotalPrice.getText().trim()));
             ps.setFloat(5, Float.parseFloat(txtSalesPrice.getText().trim()));
+            ps.setDate(6, sqlCurrentDate);
 
             ps.executeUpdate();
             db.getCon().close();
@@ -972,7 +991,11 @@ public class ProductView extends javax.swing.JFrame {
         report.add(dateToReport, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 80, 140, -1));
 
         btnReportPurchase.setText("Purchase");
-        btnReportPurchase.setActionCommand("Purchase");
+        btnReportPurchase.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnReportPurchaseMouseClicked(evt);
+            }
+        });
         report.add(btnReportPurchase, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, -1, -1));
 
         btnReportSales.setText("Sales");
@@ -1080,6 +1103,12 @@ public class ProductView extends javax.swing.JFrame {
         // TODO add your handling code here:
         addSales();
     }//GEN-LAST:event_btnSalesSaveMouseClicked
+
+    private void btnReportPurchaseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnReportPurchaseMouseClicked
+        // TODO add your handling code here:
+
+        getPurchaseReport();
+    }//GEN-LAST:event_btnReportPurchaseMouseClicked
 
     /**
      * @param args the command line arguments
