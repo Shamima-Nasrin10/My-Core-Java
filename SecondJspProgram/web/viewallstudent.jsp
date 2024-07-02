@@ -1,8 +1,4 @@
-<%-- 
-    Document   : viewallstudent
-    Created on : 2 July 2024, 1:29:35 pm
-    Author     : HP
---%>
+
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page import="model.Student" %>

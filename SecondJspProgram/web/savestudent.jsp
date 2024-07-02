@@ -1,8 +1,4 @@
-<%-- 
-    Document   : savestudent
-    Created on : 2 July 2024, 12:00:10 pm
-    Author     : HP
---%>
+
 
 <jsp:useBean class="model.Student" id="s"/>
 <%@page import="dao.StudentDao" %>
