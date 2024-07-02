@@ -3,6 +3,8 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Student;
@@ -25,8 +27,8 @@ public class StudentDao {
             ps.setString(1, s.getName());
             ps.setString(2, s.getEmail());
             ps.setString(3, s.getAddress());
-            
-            status=ps.executeUpdate();
+
+            status = ps.executeUpdate();
             ps.close();
             DbUtil.getCon().close();
 
@@ -34,6 +36,37 @@ public class StudentDao {
             Logger.getLogger(StudentDao.class.getName()).log(Level.SEVERE, null, ex);
         }
         return status;
+    }
+
+    public static List<Student> viewAllStudent() {
+        List<Student> stList = new ArrayList<>();
+
+        sql = "select * from student";
+
+        try {
+            ps = DbUtil.getCon().prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Student s = new Student(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("address")
+                );
+
+                stList.add(s);
+            }
+
+            rs.close();
+            ps.close();
+            DbUtil.getCon().close();
+        } catch (SQLException ex) {
+            Logger.getLogger(StudentDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return stList;
     }
 
 }
